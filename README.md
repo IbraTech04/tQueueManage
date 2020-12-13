@@ -12,7 +12,7 @@
   <h3>TMShare and TMSyncc</h3>
   <p>TMQM was designed to be an alternative to many popular queue management systems. The main feature is TMShare (UDP Server). This allows you to display the same queue across multiple screens. Along with this, TMQM has full support for TMSyncc, a companion app which aids in queue syncing. It's main goal is to ensure that all the queue data is the same across all TMQM clients, and that any new TMQM clients will be up-to-date. By launching a TMQM and TMSyncc client on the same network, UDP port and IP, they will automatically connect with each other, and TMSyncc will take over syncing the queue</p>
     <h3>TMRemote Admin</h3>
-    <p>Along with syncing functionality, the TMSyncc companion app also serves as the adminstrator console. The administrator console has amny features:</p>
+    <p>Along with syncing functionality, the TMSyncc companion app also serves as the adminstrator console. The administrator console has many features:</p>
       <ul>
         <li>Admin.Remove.X</li>
         <ul>
