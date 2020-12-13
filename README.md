@@ -41,7 +41,7 @@
     </ol>
      <h3>Built in Admin mode</h3>
        <p>TMQM has a built in admin mode for your convenience. By pressing `, the admin mode is activated (symbolized by the text "Admin Mode Active" in the bottom left). This mode is fairly primitive, however with it on you can use the up arrow to remove an entry in the queue, and by typing CLS and pressing enter, the queue is cleared. This feature can be disabled in Preferences.tmqm</p>
-         <h3>GUI settings
+  <h3>GUI settings</h3>
            <p>By pressing the gear in the TMQMs sidebar, you can enter the GUI settings menu. From here, you can change the theme, color scheme, and TMSyncc/TMShare state
              <h3>Offline mode</h3>
                <p>TMQM can also be used in offline mode, which does not require an internet connection. By switching TMSyncc to off in the GUI settings menu, TMQM will function entirely off the network. This does also disable TMRemote Admin. TMQM can also auto-detect when TMSyncc is not functioning properly, and will alert the user and disable TMSyncc to prevent data loss</p>
