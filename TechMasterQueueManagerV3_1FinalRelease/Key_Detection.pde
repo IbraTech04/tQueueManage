@@ -107,7 +107,7 @@ void keyPressed() {
   } else if (screenNumber == 5) {
     if (key == ENTER) {
       state++;
-    } else if (key == '-') {
+    } else if (key == '=') {
       state --;
     } else {
       if (state == 0) {
