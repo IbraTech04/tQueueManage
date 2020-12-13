@@ -13,9 +13,32 @@
   <p>TMQM was designed to be an alternative to many popular queue management systems. The main feature is TMShare (UDP Server). This allows you to display the same queue across multiple screens. Along with this, TMQM has full support for TMSyncc, a companion app which aids in queue syncing. It's main goal is to ensure that all the queue data is the same across all TMQM clients, and that any new TMQM clients will be up-to-date. By launching a TMQM and TMSyncc client on the same network, UDP port and IP, they will automatically connect with each other, and TMSyncc will take over syncing the queue
   <h3>TMRemote Admin
     <p>Along with syncing functionality, the TMSyncc companion app also serves as the adminstrator console. The administrator console has amny features:
-      <ol>
-        <li>
-<ul id="l1"><li>Admin.Remove.X<ul id="l2"><li><p style="padding-top: 1pt;padding-left: 59pt;text-indent: -18pt;text-align: left;">Removes entry at location X (Array location. Example: 0)</p></li></ul></li><li><p style="padding-left: 23pt;text-indent: -18pt;text-align: left;">Admin.Modify.X.String</p><ul id="l3"><li><p style="padding-top: 1pt;padding-left: 59pt;text-indent: -18pt;text-align: left;">Modify&#39;s the entry at location X with String</p></li></ul></li><li><p style="padding-left: 23pt;text-indent: -18pt;text-align: left;">Admin.Swap.X.Y</p><ul id="l4"><li><p style="padding-left: 59pt;text-indent: -18pt;text-align: left;">Swaps the entry at location X with the one at location Y</p></li></ul></li><li><p style="padding-left: 23pt;text-indent: -18pt;text-align: left;">Admin.AddAt.X.String</p><ul id="l5"><li><p style="padding-top: 1pt;padding-left: 59pt;text-indent: -18pt;text-align: left;">Adds String entry to the queue at point X</p></li></ul></li><li><p style="padding-left: 23pt;text-indent: -18pt;text-align: left;">Admin.Clear</p><ul id="l6"><li><p style="padding-left: 59pt;text-indent: -18pt;text-align: left;">Clears the queue</p></li></ul></li><li><p style="padding-left: 23pt;text-indent: -18pt;text-align: left;">Admin.Add.String</p><ul id="l7"><li><p style="padding-top: 1pt;padding-left: 59pt;text-indent: -18pt;text-align: left;">Adds String to the end of the queue</p></li></ul></li></ul>
+      <ul>
+        <li>Admin.Remove.X</li>
+        <ul>
+          <li>Removes entry at location X (Array location. Example: 0)</li>
+        </ul>
+                <li>Admin.Modify.X.String</li>
+        <ul>
+          <li>Modify's the entry at location X with String</li>
+        </ul>
+                        <li>Admin.Swap.X.Y</li>
+        <ul>
+          <li>Swaps the entry at location X with the one at location Y</li>
+        </ul>
+                        <li>Admin.AddAt.X.String</li>
+        <ul>
+          <li>Adds String entry to the queue at point X</li>
+        </ul>
+                        <li>Admin.Clear</li>
+        <ul>
+          <li>Clears the queue</li>
+        </ul>
+                                                  <li>Admin.Add.String</li>
+        <ul>
+          <li>Adds String to the end of the queue</li>
+        </ul>
+    </ol>
      <h3>Built in Admin mode
        <p>TMQM has a built in admin mode for your convenience. By pressing `, the admin mode is activated (symbolized by the text "Admin Mode Active" in the bottom left). This mode is fairly primitive, however with it on you can use the up arrow to remove an entry in the queue, and by typing CLS and pressing enter, the queue is cleared. This feature can be disabled in Preferences.tmqm
          <h3>GUI settings
