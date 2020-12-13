@@ -38,7 +38,7 @@
         <ul>
           <li>Adds String to the end of the queue</li>
         </ul>
-    </ol>
+    </ul>
      <h3>Built in Admin mode</h3>
        <p>TMQM has a built in admin mode for your convenience. By pressing `, the admin mode is activated (symbolized by the text "Admin Mode Active" in the bottom left). This mode is fairly primitive, however with it on you can use the up arrow to remove an entry in the queue, and by typing CLS and pressing enter, the queue is cleared. This feature can be disabled in Preferences.tmqm</p>
   <h3>GUI settings</h3>
