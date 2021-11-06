@@ -1,49 +1,44 @@
-void ultraProtecc() {
+void ultraProtecc() { //<>//
   String date = "";
   String year = "";
   int div7 = 0;
   int div5 = 0;
   String[] Activated = loadStrings("ActivationInfo.tmqm");
   if (Activated.length != 0 && Activated[0].contains("V4")) {
-    if (Activated[5].equals("DISABLED:TRUE")) {
-      licenceDisabled =true;
-      isSetup = false;
-    } else {
-      isSetup = true; 
-      String workWith = Activated[4];
-      pKey = workWith;
-      String[] splitWW = split(workWith, "-");
-      if (splitWW.length > 1) {
+    isSetup = true; 
+    String workWith = Activated[4];
+    pKey = workWith;
+    String[] splitWW = split(workWith, "-");
+    if (splitWW.length > 1) {
 
-        if (splitWW[1].equals("OEM")) {
-          for (int A = 0; A < 3; A++) {
+      if (splitWW[1].equals("OEM")) {
+        for (int A = 0; A < 3; A++) {
+          String toAdd = str(splitWW[0].charAt(A));
+          date += toAdd;
+        }
+        int test = int(date);
+        if (test != 000) {
+          for (int A = 3; A < 5; A++) {
             String toAdd = str(splitWW[0].charAt(A));
-            date += toAdd;
+            year += toAdd;
           }
-          int test = int(date);
-          if (test != 000) {
-            for (int A = 3; A < 5; A++) {
-              String toAdd = str(splitWW[0].charAt(A));
-              year += toAdd;
+          int iyear = int(year);
+          if (iyear >= 20) {
+            for (int A = 0; A < 7; A++) {
+              String toAdd = str(splitWW[2].charAt(A));
+              int toAddto = int(toAdd);
+              div7 = div7 + toAddto;
             }
-            int iyear = int(year);
-            if (iyear >= 20) {
-              for (int A = 0; A < 7; A++) {
-                String toAdd = str(splitWW[2].charAt(A));
+            if (isDiv7(div7)) {
+              for (int A = 0; A < 5; A++) {
+                String toAdd = str(splitWW[3].charAt(A));
                 int toAddto = int(toAdd);
-                div7 = div7 + toAddto;
+                div5 += toAddto;
               }
-              if (isDiv7(div7)) {
-                for (int A = 0; A < 5; A++) {
-                  String toAdd = str(splitWW[3].charAt(A));
-                  int toAddto = int(toAdd);
-                  div5 += toAddto;
-                }
-                if (isDiv5(div5)) {
-                  if (splitWW[4].equals(str(addUp(Activated[2])))) {
-                    activated = true;
-                    uName = Activated[2];
-                  }
+              if (isDiv5(div5)) {
+                if (splitWW[4].equals(str(addUp(Activated[2])))) {
+                  activated = true;
+                  uName = Activated[2];
                 }
               }
             }

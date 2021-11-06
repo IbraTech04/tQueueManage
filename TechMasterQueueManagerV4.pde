@@ -1,15 +1,19 @@
 //The Main GUI Screen and Drawing Functions
-import java.util.Calendar; //Import Calendar Functions
 import uibooster.*;
 import processing.awt.PSurfaceAWT.SmoothCanvas;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.Dimension;
 import hypermedia.net.*;
+import java.io.File;
+import java.util.*;
+
+JFrame jf;
 UDP udp;
 
-DisposeHandler dh;
+AdminEnabler ae;
 
-List queue;
+Queue queue;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.Transferable;
@@ -18,70 +22,59 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 
 import uibooster.*;
 UiBooster booster;
-
+elementLoader eL0, eL1;
 boolean isConfirmed;
 
 import processing.sound.*; //Sounds! Cause why not?
-SoundFile Error, newEntry, Clear, devCon, devDis, syncCon, syncDis, startup; 
+SoundFile Error, newEntry, Clear, syncCon, syncDis, startup, admin; 
 
 void setup() {
   background(0, 0, 0);
+  eL0 = new elementLoader(0);
+  eL1 = new elementLoader(1);
+  eL0.start();
+  eL1.start();
+  ae = new AdminEnabler();
+  ae.start();
   logo = loadImage("logo.png");
   imageMode(CENTER);
   image(logo, width/2, height/2, 1000, 1000);
   SmoothCanvas sc = (SmoothCanvas) getSurface().getNative();
-  JFrame jf = (JFrame) sc.getFrame();
+  jf = (JFrame) sc.getFrame();
   Dimension d = new Dimension(1280, 720);
   jf.setMinimumSize(d);
   getSurface().setResizable(true);
   size(1280, 720);
   booster = new UiBooster();
-  queue = new List();
-  queue.names = new StringList();
-  queue.currentName = "";
-  dh = new DisposeHandler(this);
   fill(textColor[0], textColor[1], textColor[2]);
   textAlign(CENTER);
   textSize(50);
-  homep[0] = loadImage("HomeL.png");
-  homep[1] = loadImage("Home.png");
-  settingsp[0] = loadImage("SettingsL.png");
-  settingsp[1] = loadImage("Settings.png");
-  editor[0] = loadImage("EditorL.png");
-  editor[1] = loadImage("Editor.png");
   ultraProtecc();
   loadPreferences();
-  booster = new UiBooster();
   smooth();
-  font = createFont("Product Sans.ttf", 100);
-  boldFont = createFont("Product Sans Bold.ttf", 100);
-  Error = new SoundFile(this, "Error.mp3");
-  newEntry = new SoundFile(this, "Tada.wav");
-  Clear = new SoundFile(this, "Rec.mp3");
-  devCon = new SoundFile(this, "devCon.wav");
-  devDis = new SoundFile(this, "devDis.wav");
-  syncCon = new SoundFile(this, "syncCon.wav");
-  syncDis = new SoundFile(this, "syncDis.wav");
-  startup = new SoundFile(this, "startup.wav");
-  surface.setTitle("QueueManage!");
+  surface.setTitle("QueueManage");
   surface.setResizable(true); 
   noStroke();
-  udp = new UDP( this, UDPPort, UDPIP);
-  udp.listen( true );
+  udp = new UDP(this, UDPPort, UDPIP);
+  udp.listen(true);
   udp.send("Starting");
-  startup.play();
 }
+
+int frameNum = 33;
 
 void draw() {
   if (!syncSendStat) {
+    startup = null;
     syncSendStat = true;
     udp.send("Init");
+    System.gc();
   }    
   if (startupState == 0) {
     background(0, 0, 0);
-    tint(picCol, alphaLoadingScreen);
+    tint(255, alphaLoadingScreen);
     image(logo, width/2, height/2, picSize, picSize);
     fadeOut(15, "load");
+
     if (alphaLoadingScreen <= 0) {
       if (licenceDisabled) {
         startupState = 5;
@@ -98,6 +91,38 @@ void draw() {
   } else if (easterEggStat) {
     easterEgg();
   } else if (startupState == 1) {
+
+    if (!adminCommands) {
+      if (addToDelta) {
+        if (currentDelta == minDelta) {
+          currentDelta = 0;
+          addToDelta = false;
+          tooFast = false;
+        } else {
+          currentDelta ++;
+        }
+      }
+
+      if (niceTry) {
+        adminDelta++;
+        if (adminDelta == maxAdminDelta && tooFast) {
+          niceTry = false;
+          adminDelta = 0;
+        }
+      }
+      if (!niceTry && !addToDelta) {
+        adminDelta = 0;
+        tooFast = false;
+      }
+    } else {
+      currentDelta = 0;
+      addToDelta = false;
+      adminDelta++;
+      if (adminDelta == maxAdminDelta && tooFast) {
+        tooFast = false;
+        adminDelta = 0;
+      }
+    }
     noStroke();
     colorShift(newColors[0], newColors[1], newColors[2]);
     colorShiftBG(newBG[0], newBG[1], newBG[2]);
@@ -107,16 +132,17 @@ void draw() {
     textFont(font, 25*textScale);
     tint(picCol, alpha);
     techMasterSizeDeteccV3();
-    background(0, 0, 0);
-    fill(backGroundColor[0], backGroundColor[1], backGroundColor[2], alpha);
-    rect(0, 0, width, height);
+    //background(0, 0, 0);
+    fill(backGroundColor[0], backGroundColor[1], backGroundColor[2]);
+    rect(0, 0, width, height, 0, 0, 15, 15);
     fill(colors[colorShift], colors[colorShift+1], colors[colorShift+2], alpha);
-    fadeIn(20, "main");
-    rect(0, height*0.102986612 - 1, width*0.05859375, height);
-    rect(0, 0, width, height*0.102986612);
-    image(homep[ishift], home[0], home[1], 50, 50);
-    image(settingsp[ishift], settings[0], settings[1], 50, 50);
-    image(editor[ishift], stats[0], stats[1], 50, 50);
+    fadeIn(30, "main");
+    rect(0, 0, width*0.05859375, height, 15, 15, 15, 15);
+    rect(0, 0, width, height*0.102986612, 15, 15, 15, 15);
+    fill(255);
+    image(homep, home[0], home[1], 50, 50);
+    image(settingsp, settings[0], settings[1], 50, 50);
+    image(editor, stats[0], stats[1], 50, 50);
     if (screenNumber == 1) {
       mainScreen();
     } else if (screenNumber == 2) {
@@ -201,25 +227,14 @@ void mainScreen() {
   text(topTextHome[lang], 75, posName[1] -20);
   textFont(font, 25*textScale);
   text("Enter your name to reserve a spot", 400, posName[shiftRegister+1]-20);
-  textFont(font, 25*textScale);
-  if (adminMode) {
-    text("Admin Mode Active", 80, height - 5);
-  }
-  if (errorStat) {
-    fill(200, 25, 18);        
-    textFont(font, 15*textScale);
-    textAlign(LEFT);
-    if (tmSyncc) {
-      text("Error: It appears that TMShare is not \nworking properly. TMQM will continue in offline mode. \nTo fix this, try changing the UDP IP in Settings", width*0.05859375 + 5, 125);
-    }
-  }
+  textFont(font, 17*textScale);
   textAlign(RIGHT);
   if (offlineMode) {
     text("Offline Mode", width-10, height-10);
   } else if (syncServerStat) {
-    text("TMSyncc Connected", width-10, height-10);
+    text("tSyncc Connected", width-10, height-10);
   } else {
-    text("TMSyncc Not Connected", width-10, height-10);
+    text("tSyncc Not Connected", width-10, height-10);
     udp.send("waiting4Sync");
   }
   strokeWeight(5);
@@ -231,9 +246,29 @@ void editName() {
   rectMode(CENTER);
   stroke(colors[colorShift], colors[colorShift+1], colors[colorShift+2], alpha);
   noFill();
-  rect(posView[0], posView[1]-35, 335, 35);
-  rectMode(CORNER);
+  rect(posView[0], posView[1]-35, 335, 35, 15, 15, 15, 15);
+  textFont(boldFont, 15*textScale);
+
   textAlign(CENTER);
+  if (errorStat) {
+    fill(200, 25, 18);        
+    if (tmSyncc) {
+      text("Error. See settings for more info", posView[0], posView[1]+15);
+    }
+  } else if (adminMode) {
+    text("Administrator Commands Active", posView[0], posView[1]+15);
+  } else if (tooFast) {
+    if (adminCommands) {
+      text("Administrator Commands Unlocked! You're immune!", posView[0], posView[1]+15);
+    } else if (niceTry) {
+      text("Nice try. You're not an administrator", posView[0], posView[1]+15);
+    } else {
+      text("Too fast! You must wait another " + (minDelta - currentDelta)/60 + " seconds before entering another entry", posView[0], posView[1]+15);
+    }
+  }
+  textFont(font, 25*textScale);
+
+  rectMode(CORNER);
   fill(textColor[0], textColor[1], textColor[2], alpha);
   text(queue.currentName, posView[0], posView[1]-30);
 }
@@ -246,15 +281,32 @@ void showNames() {
   pushMatrix();
   for (int i = 0; i < queue.names.size(); i++) {
     yPos = (i % namesPerColumn) * 35;
-    if (i != 0 && i % namesPerColumn == 0) {
-      translate(250, 0);
-    }
     String name = queue.names.get(i);
     textFont(boldFont, 25);
+    if (i != 0 && i % namesPerColumn == 0) {
+      translate(getLongestEntry(i, namesPerColumn)*10+80, 0);
+    }
     text(name, 0, yPos);
   }
   popMatrix();
 }
+
+int getLongestEntry(int current, int maxNamesPerColumn) {
+  int first = current - maxNamesPerColumn;
+  int last = current;
+  int max = 0;
+
+  for (int i = first; i < last; i++) {
+    if (i < 0) {
+      break;
+    }
+    if (queue.names.get(i).length() > max) {
+      max = queue.names.get(i).length();
+    }
+  }
+  return max;
+}
+
 void easterEgg() {
   textFont(boldFont, 75*textScale);
   tint(picCol, alphaEaster);
@@ -262,14 +314,16 @@ void easterEgg() {
   fadeIn(15, "2");
   pushMatrix();
   translate(0, 100);
-  text("Credits:", width/2, height/2-240);
+  text("tQueueManage Credits:", width/2, height/2-240);
   textFont(font, 40*textScale);
   text("Lead Developer: Ibrahim Chehab", width/2, height/2-165);
-  text("Lead Beta Tester: Maalik Khaial", width/2, height/2-120);
-  text("Beta Tester: Fardeen Kasmani", width/2, height/2-75);
-  text("Beta Tester: Ibrahim Qaiser", width/2, height/2-30);
+  text("This program uses several tAPIs, such as tSyncc and tSizeDetecc", width/2, height/2-120);
+  text("This program is made possible by the efforts of the Processing Team", width/2, height/2-75);
+  text("This program uses audio from Windows 11", width/2, height/2-30);
   textFont(boldFont, 40*textScale);
-  text("Press any key to return to TMQM", width/2, height/2+20);
+  text("You can find this program on GitHub!", width/2, height/2+20);
+  text("Press any key to return to TMQM", width/2, height/2+65);
+
   popMatrix();
   if (fadeOut) {
     fadeOut(15, "2");
@@ -313,7 +367,7 @@ void guiSettings() {
   text(topTextSettings[lang], 75, posName[1] -20);
   textFont(font, 25*textScale);
   textAlign(LEFT);
-  text("Customize it to your liking", 450, posName[shiftRegister+1]-20);
+  text("Customize it to your liking", 450, posName[1]-20);
   textFont(boldFont, 50*textScale);
   textAlign(CENTER);
 
@@ -334,11 +388,16 @@ void guiSettings() {
   text("UDP Socket: " + UDPPort, width/2, UDPSPos[0]);
   text("UDP IP Address: " + UDPIP, width/2, UDPIPPos[0]);
 
-
-
-
   textFont(boldFont, 20*textScale);
-  text(settingBottomText[lang], width/2+35, height-80);
+  text(settingBottomText[lang], width/2+35, height-120);
+  if (errorStat) {
+    fill(200, 25, 18);        
+    textFont(boldFont, 17*textScale);
+    textAlign(CENTER);
+    if (tmSyncc) {
+      text("tShare does not appear to be working correcrly. A commun fix is changing the UDP IP/Port in settings. Error Code: UDP_FAILED_TO_RECEIVE", width/2+35, height-20);
+    }
+  }
 }
 
 void themeEditor() {
@@ -650,4 +709,10 @@ void colorShiftImg(int r) {
   } else if (picCol < r) {
     picCol+=transSpeed;
   }
+}
+
+void drawSideBarIcons() {
+  pushMatrix();
+
+  popMatrix();
 }

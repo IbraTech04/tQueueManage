@@ -2,7 +2,7 @@ void legacyLicence() {
   techMasterProtecc();
   techMasterCracc();
   if (active && active2) {
-    booster.showInfoDialog("Congratulations on upgrading to TMQMV4. Your licence information has been updated to comply with UltraProteccV2");
+    booster.showInfoDialog("Congratulations on upgrading to TMQMV4. Your licence information has successfully been mingrated! \nWe hope you enjoy tQueueManageV4!tQueueManage");
     updateLicenceFile();
     activated = true;
     isSetup = true;
@@ -14,7 +14,7 @@ void updateLicenceFile() {
   String newKey = Activated[6];
   newKey += "-"+addUp(Activated[2]);
   Licence = createWriter("data/ActivationInfo.tmqm");
-  Licence.println("TMQM Activation File (Do not modify this file unless you know what you're doing):");
+  Licence.println("TMQMV4 Activation File (Do not modify this file unless you know what you're doing):");
   Licence.println("ProductOwner:");
   Licence.println(Activated[2]);
   Licence.println("ProductKey:");

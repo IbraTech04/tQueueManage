@@ -15,7 +15,7 @@ void techMasterSizeDeteccV3() {
   settings[1] = hei*0.417095778;
   //Stats Icon
   stats[0] = wid*0.02734375;
-  stats[1] = hei*0.493055556;
+  stats[1] = hei*0.5078024668;
   //Theme Toggle Button Coords
   them[0] = wid*0.37109375;
   them[1] = wid*0.62734375;

@@ -1,24 +1,36 @@
-void keyPressed() { //<>//
+void keyPressed() { //<>// //<>// //<>// //<>//
   if (key == 22 && keyCode==86) {
-    pasteToText(state, GetTextFromClipboard ());
+    pasteToText(state, GetTextFromClipboard());
   }
   if (startupState == 0) {
     if (key == 'e') {
       easterEggStat = true;
     }
-  } else if (easterEggStat) {
+  } else if (easterEggStat && key != 'e') {
+    print("here");
     fadeOut = true;
     startupState = 1;
+    easterEggStat = false;
   } else if (startupState == 1) {
     if (screenNumber == 1) {
       if (key == CODED) {
         if (keyCode == UP && adminMode) {
-          queue.removeOne();
+          if (offlineMode) {
+            if (queue.names.size() != 0) {
+              queue.size--;
+              queue.names.remove(0);
+              Clear.play();
+            } else {
+              Error.play();
+            }
+          } else {
+            udp.send("UP");
+          }
         } else if (keyCode == DOWN && adminMode) {
           if (offlineMode) {
-            udp.send("CLS");
-          } else {
             queue.names.clear();
+          } else {
+            udp.send("CLS");
           }
           Clear.play();
         }
@@ -28,26 +40,36 @@ void keyPressed() { //<>//
         } else if (key != ENTER && queue.currentName.length() <=29 && key != CODED && key != '`') {
           queue.currentName += key;
         } else if (key == ENTER) {
-          if (queue.currentName.equals("") || queue.currentName.equals("CLS") || queue.currentName.equals("UP") || queue.currentName.contains("Admin")) {
+          if (queue.currentName.equals("") || queue.currentName.equals("CLS") || queue.currentName.equals("UP") || queue.currentName.contains("Admin")|| queue.currentName.contains("Sync")) {
             Error.play();
             queue.resetName();
-          } else if (queue.currentName.toUpperCase().contains("CAMILLERI")) {
-            corruptLicence();
           } else {
-            newEntry.play();
-            if (!offlineMode) {
-              udp.send(queue.currentName);
+            if (currentDelta == 0) {
+              newEntry.play();
+              if (!offlineMode) {
+                udp.send(queue.currentName);
+              } else {
+                queue.names.append(queue.currentName);
+              }
+              queue.resetName();
+              addToDelta = true;
             } else {
-              queue.names.append(queue.currentName);
+              Error.play();
+              queue.resetName();
+              tooFast = true;
+              niceTry = false;
+              currentDelta -= 150;
             }
-            queue.resetName();
           }
         } else if (key == '`') {
           if (adminCommands) {
             adminMode =! adminMode;
+            adminDelta = maxAdminDelta-10;
           } else {
             Error.play();
             queue.resetName();
+            niceTry = true;
+            tooFast = true;
           }
         }
       }

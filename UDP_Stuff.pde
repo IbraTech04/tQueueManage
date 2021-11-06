@@ -11,9 +11,6 @@ void receive( byte[] data ) {
         Error.play();
       }
     } else if (splitRec[0].equals("Init")) {
-      if (startupState == 1) {
-        devCon.play();
-      }
       errorStat = false;
     } else if (splitRec[0].equals("CLS")) {
       queue.names.clear();
@@ -35,14 +32,15 @@ void receive( byte[] data ) {
       }
     } else if (recName.equals("SyncOn")) {
       serverConnectProtocol();
-    } else if (recName.equals("ClientDisconnect")) {
-      clientDisconnect();
     } else if (splitRec[0].contains("Admin")) {
       adminAdvanced(recName);
     } else if (splitRec[0].equals("ServerDisconnect")) {
       sDisconnectProtocol();
     } else if (!splitRec[0].equals("syncWillBeTurnedOff") && !splitRec[0].equals("isType") && !splitRec[0].equals("numType") &&!splitRec[0].equals("checkType") && !splitRec[0].equals("Version") && !recName.equals("devRec") && !splitRec[0].equals("Size") && !splitRec[0]  .equals("Sync") && !splitRec[0].equals("Starting") && !splitRec[0].equals("waiting4Sync")) {
       queue.names.append(recName); 
+      if (adminCommands && !jf.isFocused()) {
+        jf.requestFocus();
+      }
       queue.size++;
     }
   }
@@ -56,10 +54,6 @@ void serverConnectProtocol() {
 void sDisconnectProtocol() {
   syncServerStat = false;
   syncDis.play();
-}
-//Called when TMQM Client Disconnects
-void clientDisconnect() {
-  devDis.play();
 }
 
 void adminAdvanced(String currentName) {
