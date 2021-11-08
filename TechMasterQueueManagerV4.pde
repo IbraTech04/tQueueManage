@@ -7,6 +7,11 @@ import java.awt.Dimension;
 import hypermedia.net.*;
 import java.io.File;
 import java.util.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;  
+import uibooster.*;
 
 JFrame jf;
 UDP udp;
@@ -15,12 +20,6 @@ AdminEnabler ae;
 
 Queue queue;
 
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;  
-
-import uibooster.*;
 UiBooster booster;
 elementLoader eL0, eL1;
 boolean isConfirmed;
@@ -63,102 +62,108 @@ void setup() {
 int frameNum = 33;
 
 void draw() {
-  if (!syncSendStat) {
-    startup = null;
-    syncSendStat = true;
-    udp.send("Init");
-    System.gc();
-  }    
-  if (startupState == 0) {
-    background(0, 0, 0);
-    tint(255, alphaLoadingScreen);
-    image(logo, width/2, height/2, picSize, picSize);
-    fadeOut(15, "load");
+  try {
+    if (!syncSendStat) {
+      startup = null;
+      syncSendStat = true;
+      udp.send("Init");
+      System.gc();
+    }    
+    if (startupState == 0) {
+      background(0, 0, 0);
+      tint(255, alphaLoadingScreen);
+      image(logo, width/2, height/2, picSize, picSize);
+      fadeOut(15, "load");
 
-    if (alphaLoadingScreen <= 0) {
-      if (licenceDisabled) {
-        startupState = 5;
-      } else if (activated) {
-        startupState = 1;
-      } else {
-        if (isSetup) {
-          startupState = 2;
+      if (alphaLoadingScreen <= 0) {
+        if (licenceDisabled) {
+          startupState = 5;
+        } else if (activated) {
+          startupState = 1;
         } else {
-          startupState = 3;
+          if (isSetup) {
+            startupState = 2;
+          } else {
+            startupState = 3;
+          }
         }
       }
-    }
-  } else if (easterEggStat) {
-    easterEgg();
-  } else if (startupState == 1) {
+    } else if (easterEggStat) {
+      easterEgg();
+    } else if (startupState == 1) {
 
-    if (!adminCommands) {
-      if (addToDelta) {
-        if (currentDelta == minDelta) {
-          currentDelta = 0;
-          addToDelta = false;
+      if (!adminCommands) {
+        if (addToDelta) {
+          if (currentDelta == minDelta) {
+            currentDelta = 0;
+            addToDelta = false;
+            tooFast = false;
+          } else {
+            currentDelta ++;
+          }
+        }
+
+        if (niceTry) {
+          adminDelta++;
+          if (adminDelta == maxAdminDelta && tooFast) {
+            niceTry = false;
+            adminDelta = 0;
+          }
+        }
+        if (!niceTry && !addToDelta) {
+          adminDelta = 0;
           tooFast = false;
-        } else {
-          currentDelta ++;
         }
-      }
-
-      if (niceTry) {
+      } else {
+        currentDelta = 0;
+        addToDelta = false;
         adminDelta++;
         if (adminDelta == maxAdminDelta && tooFast) {
-          niceTry = false;
+          tooFast = false;
           adminDelta = 0;
         }
       }
-      if (!niceTry && !addToDelta) {
-        adminDelta = 0;
-        tooFast = false;
-      }
-    } else {
-      currentDelta = 0;
-      addToDelta = false;
-      adminDelta++;
-      if (adminDelta == maxAdminDelta && tooFast) {
-        tooFast = false;
-        adminDelta = 0;
-      }
-    }
-    noStroke();
-    colorShift(newColors[0], newColors[1], newColors[2]);
-    colorShiftBG(newBG[0], newBG[1], newBG[2]);
-    colorShiftText(newText[0], newText[1], newText[2]);
-    colorShiftImg(newPicCol);
+      noStroke();
+      colorShift(newColors[0], newColors[1], newColors[2]);
+      colorShiftBG(newBG[0], newBG[1], newBG[2]);
+      colorShiftText(newText[0], newText[1], newText[2]);
+      colorShiftImg(newPicCol);
 
-    textFont(font, 25*textScale);
-    tint(picCol, alpha);
-    techMasterSizeDeteccV3();
-    //background(0, 0, 0);
-    fill(backGroundColor[0], backGroundColor[1], backGroundColor[2]);
-    rect(0, 0, width, height, 0, 0, 15, 15);
-    fill(colors[colorShift], colors[colorShift+1], colors[colorShift+2], alpha);
-    fadeIn(30, "main");
-    rect(0, 0, width*0.05859375, height, 15, 15, 15, 15);
-    rect(0, 0, width, height*0.102986612, 15, 15, 15, 15);
-    fill(255);
-    image(homep, home[0], home[1], 50, 50);
-    image(settingsp, settings[0], settings[1], 50, 50);
-    image(editor, stats[0], stats[1], 50, 50);
-    if (screenNumber == 1) {
-      mainScreen();
-    } else if (screenNumber == 2) {
-      guiSettings();
-    } else if (screenNumber == 3) {
-      themeEditor();
+      textFont(font, 25*textScale);
+      tint(picCol, alpha);
+      techMasterSizeDeteccV3();
+      //background(0, 0, 0);
+      fill(backGroundColor[0], backGroundColor[1], backGroundColor[2]);
+      rect(0, 0, width, height, 0, 0, 15, 15);
+      fill(colors[colorShift], colors[colorShift+1], colors[colorShift+2], alpha);
+      fadeIn(30, "main");
+      rect(0, 0, width*0.05859375, height, 15, 15, 15, 15);
+      rect(0, 0, width, height*0.102986612, 15, 15, 15, 15);
+      fill(255);
+      image(homep, home[0], home[1], 50, 50);
+      image(settingsp, settings[0], settings[1], 50, 50);
+      image(editor, stats[0], stats[1], 50, 50);
+      if (screenNumber == 1) {
+        mainScreen();
+      } else if (screenNumber == 2) {
+        guiSettings();
+      } else if (screenNumber == 3) {
+        themeEditor();
+      }
+    } else if (startupState == 2) {
+      invalidLicence();
+    } else if (startupState == 3) {
+      fTimeSetup();
+    } else if (startupState == 4) {
+      background(0);
+      licenceCheck();
+    } else if (startupState == 5) {
+      licenceisCorrupt();
     }
-  } else if (startupState == 2) {
-    invalidLicence();
-  } else if (startupState == 3) {
-    fTimeSetup();
-  } else if (startupState == 4) {
-    background(0);
-    licenceCheck();
-  } else if (startupState == 5) {
-    licenceisCorrupt();
+  }
+  catch(Exception e) {
+    booster.showException("We're sorry, tQMe has encountered an error and needs to restart. If you contact support, here's more information about your error", "Error", e);
+    exit();
   }
 }
 
@@ -168,21 +173,23 @@ void fTimeSetup() {
   fill(255, 255, 255, alphaLicence);
   fadeIn(15, "");
   pushMatrix();
-  translate(0, 50);
-  textFont(boldFont, 75);
-  text("Welcome to TMQM V4!", width/2, height/2-200);
+  translate(0, 75);
+  textFont(boldFont, 55);
+  //text(, width/2, height/2-265);
+  text("Hi, " + getUserName() + "! Welcome to tQMe V5!", width/2, height/2-200);
   textFont(boldFont, 45);    
-  text("A new era of Queue Management!", width/2, height/2-150);
+  text("When Queue Management meets ICS", width/2, height/2-150);
   textFont(font, 35);
   text("To continue, please enter your licence information", width/2, height/2-110);
   textFont(boldFont, 40);
   text("Username: " + uName, width/2, height/2-60);
   text("Product Key: " + pKey, width/2, height/2-10);
   textFont(boldFont, 30);
-  text("Tip: You can copy and paste text into the licence screen now! Try it! ", width/2, height-60);
+  text("Tip: You can now paste your info into the licence screen! Try it!\nYou can also download your licence file and press \"`\" to load it automatically!", width/2, height-150);
 
   popMatrix();
   if (state == 2) {
+    println("here");
     writeLicence(false);
     ultraProtecc();
     startupState = 4;
@@ -200,7 +207,7 @@ void licenceCheck() {
   if (tet >= 45) {
     background(0);
     if (activated) {
-      text("Activation Successful! \n Welcome to TMQM!", width/2, height/2);
+      text("Activation Successful! \n Welcome to tQMe!", width/2, height/2);
       if (tet >= 55) {
         fadeOut(15, "check");
         fadeOut(15, "main");
@@ -250,12 +257,7 @@ void editName() {
   textFont(boldFont, 15*textScale);
 
   textAlign(CENTER);
-  if (errorStat) {
-    fill(200, 25, 18);        
-    if (tmSyncc) {
-      text("Error. See settings for more info", posView[0], posView[1]+15);
-    }
-  } else if (adminMode) {
+  if (adminMode) {
     text("Administrator Commands Active", posView[0], posView[1]+15);
   } else if (tooFast) {
     if (adminCommands) {
@@ -265,6 +267,21 @@ void editName() {
     } else {
       text("Too fast! You must wait another " + (minDelta - currentDelta)/60 + " seconds before entering another entry", posView[0], posView[1]+15);
     }
+  } else if (tSyncError) {
+    fill(200, 25, 18);        
+    tSyncDelta++;
+    text("tSyncc failed to connect", posView[0], posView[1]+15);
+    if (tSyncDelta == maxAdminDelta) {
+      tSyncError = false;
+      tSyncDelta = 0;
+    }
+  } else if (adminError) {
+    fill(200, 25, 18);        
+    text("Error. See settings for more info", posView[0], posView[1]+15);
+  }
+  if ((errorStat && tmSyncc)) {
+    fill(200, 25, 18);        
+    text("Error. See settings for more info", posView[0], posView[1]+15);
   }
   textFont(font, 25*textScale);
 
@@ -275,9 +292,11 @@ void editName() {
 //Shows the Queue (Thanks to Tiemen for the help with this part)
 void showNames() {
   textAlign(LEFT);
-  int namesPerColumn = round((height/2.5)/20);
+  int namesPerColumn = round((height/3.5)/14);
   int yPos = 0;
-  translate(width*0.05859375+15, 250);
+  int xPos = 0;
+  int currentMax = 0;
+  translate(width*0.05859375+15, height/3.5);
   pushMatrix();
   for (int i = 0; i < queue.names.size(); i++) {
     yPos = (i % namesPerColumn) * 35;
@@ -285,8 +304,13 @@ void showNames() {
     textFont(boldFont, 25);
     if (i != 0 && i % namesPerColumn == 0) {
       translate(getLongestEntry(i, namesPerColumn)*10+80, 0);
+      xPos += getLongestEntry(i, namesPerColumn)*10+80;
+      currentMax = getLongestEntry(i, namesPerColumn)*10+90;
     }
-    text(name, 0, yPos);
+    if (xPos + currentMax < width-50) {
+      //println(xPos + currentMax);
+      text(name, 0, yPos);
+    }
   }
   popMatrix();
 }
@@ -322,7 +346,7 @@ void easterEgg() {
   text("This program uses audio from Windows 11", width/2, height/2-30);
   textFont(boldFont, 40*textScale);
   text("You can find this program on GitHub!", width/2, height/2+20);
-  text("Press any key to return to TMQM", width/2, height/2+65);
+  text("Press any key to return to tQMe", width/2, height/2+65);
 
   popMatrix();
   if (fadeOut) {
@@ -343,7 +367,7 @@ void licenceisCorrupt() {
   textAlign(CENTER);
   text("Uh oh, Invalid Licence", width/2, height/2-20);
   textFont(font, 30);
-  text("It appears your TMQM licence has been deactivated. Please contact support", width/2, height/2+25);
+  text("It appears your tQMe licence has been deactivated. Please contact support", width/2, height/2+25);
 }
 
 void invalidLicence() {
@@ -355,7 +379,7 @@ void invalidLicence() {
   textAlign(CENTER);
   text("Uh oh, Invalid Licence", width/2, height/2-20);
   textFont(font, 30);
-  text("It appears your TMQM licence has been altered, or is invalid.\n Press R now to restart into licence mode\nIf you need help, please contact support", width/2, height/2+25);
+  text("It appears your tQMe licence has been altered, or is invalid.\n Press R now to restart into licence mode\nIf you need help, please contact support", width/2, height/2+25);
 }
 
 void guiSettings() {
@@ -389,14 +413,15 @@ void guiSettings() {
   text("UDP IP Address: " + UDPIP, width/2, UDPIPPos[0]);
 
   textFont(boldFont, 20*textScale);
-  text(settingBottomText[lang], width/2+35, height-120);
-  if (errorStat) {
+  text(settingBottomText[lang], width/2+35, height-90);
+  textFont(boldFont, 17*textScale);
+  if (errorStat && tmSyncc) {
     fill(200, 25, 18);        
-    textFont(boldFont, 17*textScale);
     textAlign(CENTER);
-    if (tmSyncc) {
-      text("tShare does not appear to be working correcrly. A commun fix is changing the UDP IP/Port in settings. Error Code: UDP_FAILED_TO_RECEIVE", width/2+35, height-20);
-    }
+    text("tShare does not appear to be working correcrly. A commun fix is changing the UDP IP/Port in settings. Error Code: UDP_FAILED_TO_RECEIVE", width/2+35, height-25);
+  } else if (adminError) {
+    fill(200, 25, 18);        
+    text("It appears your Admin USB is corrupt or has been tampered with. Error code: ADMIN_USB_HASH_AUTHENTICATION_FAILED", width/2+35, height-25);
   }
 }
 
@@ -421,16 +446,7 @@ void themeEditor() {
   text("Changing settings here will enable the custom theme and update the custom theme file", width/2+35, height-80);
 }
 
-void mousePressed() {
-  if (mouseX >= 0 && mouseX <= 75) {
-    if (mouseY >=home[1]-25 && mouseY <=home[1]+25) {
-      screenNumber = 1;
-    } else if (mouseY >=settings[1]-25 && mouseY <=settings[1]+25) {
-      screenNumber = 2;
-    } else if (mouseY >=stats[1]-25 && mouseY <=stats[1]+25) {
-      screenNumber = 3;
-    }
-  }  
+void mousePressed() { 
   if (screenNumber == 2) {
 
     if (mouseX >= them[0] && mouseX <= them[1] && mouseY >= them[2] && mouseY <= them[3]) {
@@ -570,7 +586,7 @@ void mousePressed() {
     } else if (mouseX >= verboseButton[0] && mouseX <= verboseButton[1] && mouseY >= verboseButton[2] && mouseY <= verboseButton[3]) {
       if (TMSyncc.equals("On")) {
         booster.showConfirmDialog(
-          "This action requires a restart of TMQM. Are you sure?", 
+          "This action requires a restart of tQMe. Are you sure?", 
           "Confirm Reboot", 
           new Runnable() {
           public void run() {
@@ -590,12 +606,11 @@ void mousePressed() {
           tmSyncc = false;
           updateFile();
           reset(false);
-          setup();
         } else {
         }
       } else {
         booster.showConfirmDialog(
-          "This action requires a restart of TMQM. Are you sure?", 
+          "This action requires a restart of tQMe. Are you sure?", 
           "Confirm Reboot", 
           new Runnable() {
           public void run() {
@@ -615,19 +630,17 @@ void mousePressed() {
           tmSyncc = true;
           updateFile();
           reset(false);
-          setup();
         } else {
         }
       }
     }
     updateFile();
   } else if (screenNumber == 3) {
-    Theme = "Custom";
-    customTheme = true;
-    updateFile();
     if (mouseY >= 0 && mouseY <=height*0.102986612) {
       try {
-        sideBar = booster.showColorPickerAndGetRGB("Choose the color scheme for the TMQM Sidebar", "SideBar Color picking");
+        Theme = "Custom";
+        customTheme = true;
+        sideBar = booster.showColorPickerAndGetRGB("Choose the color scheme for the tQMe Sidebar", "SideBar Color picking");
         newColors[0] = (round(red(sideBar)));
         newColors [1] = (round(green(sideBar)));
         newColors [2] = (round(blue(sideBar)));
@@ -637,7 +650,9 @@ void mousePressed() {
       }
     } else if (!(mouseX >= 0 && mouseX <= width*0.05859375)) {
       try {
-        bg = booster.showColorPickerAndGetRGB("Choose the color for TMQM's background", "Background Color picking");
+        Theme = "Custom";
+        customTheme = true;
+        bg = booster.showColorPickerAndGetRGB("Choose the color for tQMe's background", "Background Color picking");
         newBG[0] = (round(red(bg)));
         newBG [1] = (round(green(bg)));
         newBG [2] = (round(blue(bg)));
@@ -647,6 +662,15 @@ void mousePressed() {
       }
     }
     updateThemeFile();
+  }
+  if (mouseX >= 0 && mouseX <= 75) {
+    if (mouseY >=home[1]-25 && mouseY <=home[1]+25) {
+      screenNumber = 1;
+    } else if (mouseY >=settings[1]-25 && mouseY <=settings[1]+25) {
+      screenNumber = 2;
+    } else if (mouseY >=stats[1]-25 && mouseY <=stats[1]+25) {
+      screenNumber = 3;
+    }
   }
 }
 

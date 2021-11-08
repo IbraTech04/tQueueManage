@@ -3,7 +3,7 @@ void ultraProtecc() { //<>//
   String year = "";
   int div7 = 0;
   int div5 = 0;
-  String[] Activated = loadStrings("ActivationInfo.tmqm");
+  String[] Activated = loadStrings("ActivationInfo.tqme");
   if (Activated.length != 0 && Activated[0].contains("V4")) {
     isSetup = true; 
     String workWith = Activated[4];
@@ -78,7 +78,7 @@ boolean isDiv5(int n) {
 }
 
 void loadPreferences() {
-  pref = loadStrings("Preferences.tmqm");
+  pref = loadStrings("Preferences.tqme");
   UDPIP = split(pref[1], ':')[1];
   UDPPort = int(split(pref[2], ':')[1]);
   TMSyncc = split(pref[3], ':')[1]; 
@@ -210,8 +210,8 @@ void loadPreferences() {
   }
 }
 void updateFile() {
-  Pref = createWriter("data/Preferences.tmqm");
-  Pref.println("TMQM_Settings");
+  Pref = createWriter("data/Preferences.tqme");
+  Pref.println("tQMe_Settings");
   Pref.println("UDP IP:" + UDPIP);
   Pref.println("UDP Socket:" + UDPPort);
   Pref.println("TMShare:" + TMSyncc);
@@ -220,7 +220,7 @@ void updateFile() {
   Pref.flush();
 }
 void loadCustomTheme(boolean booted) {
-  String[] theme = loadStrings("customTheme.tmqm");
+  String[] theme = loadStrings("customTheme.tqme");
   String[] temp = split(theme[1], ":");
   int[] tempBG = int(split(temp[1], ","));
   newBG[0] = tempBG[0];
@@ -257,8 +257,8 @@ void loadCustomTheme(boolean booted) {
 }
 
 void updateThemeFile() {
-  cTheme = createWriter("data/customTheme.tmqm");
-  cTheme.println("TMQM CUSTOM THEME FILE");
+  cTheme = createWriter("data/customTheme.tqme");
+  cTheme.println("tQMe CUSTOM THEME FILE");
   cTheme.println("Background Color:" + newBG[0] + "," + newBG[1] + "," + newBG[2]);
   cTheme.println("Text Color:" + newText[0] + "," + newText[1] + "," + newText[2]);
   cTheme.println("Color Scheme:" + newColors[0] + "," + newColors[1] + "," + newColors[2]);
@@ -279,16 +279,11 @@ void corruptLicence() {
 
 
 void writeLicence(boolean disabled) {
-  Licence = createWriter("data/ActivationInfo.tmqm");
-  Licence.println("TMQM V4 Activation File (Do not modify this file unless you know what you're doing):");
+  Licence = createWriter("data/ActivationInfo.tqme");
+  Licence.println("tQMe V4 Activation File (Do not modify this file unless you know what you're doing):");
   Licence.println("ProductOwner:");
   Licence.println(uName);
   Licence.println("ProductKey:");
   Licence.println(pKey);
-  if (disabled) {
-    Licence.println("DISABLED:TRUE");
-  } else {
-    Licence.println("DISABLED:FALSE");
-  }
   Licence.flush();
 }

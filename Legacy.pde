@@ -2,7 +2,7 @@ void legacyLicence() {
   techMasterProtecc();
   techMasterCracc();
   if (active && active2) {
-    booster.showInfoDialog("Congratulations on upgrading to TMQMV4. Your licence information has successfully been mingrated! \nWe hope you enjoy tQueueManageV4!tQueueManage");
+    booster.showInfoDialog("Congratulations on upgrading to tQMeV4. Your licence information has successfully been mingrated! \nWe hope you enjoy tQueueManageV4!tQueueManage");
     updateLicenceFile();
     activated = true;
     isSetup = true;
@@ -10,11 +10,11 @@ void legacyLicence() {
 }
 
 void updateLicenceFile() {
-  String[] Activated = loadStrings("ActivationInfo.tmqm");
+  String[] Activated = loadStrings("ActivationInfo.tqme");
   String newKey = Activated[6];
   newKey += "-"+addUp(Activated[2]);
-  Licence = createWriter("data/ActivationInfo.tmqm");
-  Licence.println("TMQMV4 Activation File (Do not modify this file unless you know what you're doing):");
+  Licence = createWriter("data/ActivationInfo.tqme");
+  Licence.println("tQMeV4 Activation File (Do not modify this file unless you know what you're doing):");
   Licence.println("ProductOwner:");
   Licence.println(Activated[2]);
   Licence.println("ProductKey:");
@@ -27,7 +27,7 @@ void techMasterProtecc() {
   String year = "";
   int div7 = 0;
   int div5 = 0;
-  String[] Activated = loadStrings("ActivationInfo.tmqm");
+  String[] Activated = loadStrings("ActivationInfo.tQMe");
   if (Activated.length != 0) {
     String workWith = Activated[6];
     String[] splitWW = split(workWith, "-");
@@ -69,7 +69,7 @@ void techMasterProtecc() {
 }
 void techMasterCracc() {
   String proKey = "";
-  String[] pcHash = loadStrings("ActivationInfo.tmqm");
+  String[] pcHash = loadStrings("ActivationInfo.tQMe");
   String docProKey = pcHash[4];
   String current = pcHash[2];
   for (int A = 0; A < current.length(); A++) {

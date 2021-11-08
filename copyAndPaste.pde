@@ -46,8 +46,15 @@ static final javax.swing.JFrame getJFrame(final PSurface surf) {
 }
 
 void pasteToText(int state, String toPaste) {
-  if (state == 0) {
-    uName+=toPaste;
+  if (toPaste.contains(":") && startupState == 3) {
+    String[] splitInfo = toPaste.split(":");
+    if (splitInfo.length == 2) {
+      uName = splitInfo[0];
+      pKey = splitInfo[1];
+      this.state = 2;
+    }
+  } else if (state == 0) {
+    uName += toPaste;
   } else if (state == 1) {
     pKey += toPaste;
   } else if (state == 4) {

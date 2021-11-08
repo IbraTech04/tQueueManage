@@ -28,11 +28,11 @@ class AdminEnabler extends Thread {
     while (true) {
       List <File>files = Arrays.asList(File.listRoots());
       int currentNumDrives = files.size();
-      if (currentNumDrives > numDrives) {
+      if (currentNumDrives != numDrives) {
         numDrives = currentNumDrives;
-        checkAdminConnection();
+        adminCommands = checkAdminConnection();
         if (adminCommands) {
-          if (startupState == 1 && millis() > 1000) {
+          if (startupState == 1 && millis() > 2000 && alpha >= 255) {
             admin.play();
           }
           break;

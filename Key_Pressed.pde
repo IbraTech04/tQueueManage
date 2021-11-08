@@ -1,4 +1,6 @@
-void keyPressed() { //<>// //<>// //<>// //<>//
+File file; //<>//
+
+void keyPressed() { //<>//
   if (key == 22 && keyCode==86) {
     pasteToText(state, GetTextFromClipboard());
   }
@@ -64,7 +66,7 @@ void keyPressed() { //<>// //<>// //<>// //<>//
         } else if (key == '`') {
           if (adminCommands) {
             adminMode =! adminMode;
-            adminDelta = maxAdminDelta-10;
+            adminDelta = maxAdminDelta-5;
           } else {
             Error.play();
             queue.resetName();
@@ -75,14 +77,42 @@ void keyPressed() { //<>// //<>// //<>// //<>//
       }
     } else if (screenNumber == 2) {
       if (key == 'R' || key == 'r') {
-        reset(false);
+        booster.showConfirmDialog(
+          "Are you sure you want to restart tQMe? You'll lose all your entires if tSyncc is not connected", 
+          "Confirm tQMe restart", 
+          new Runnable() {
+          public void run() {
+            reset(false);
+          }
+        }
+        , 
+          new Runnable() {
+          public void run() {
+          }
+        }
+        );
       } else if (key == 'F' || key =='f') {
-        reset(true);
+        booster.showConfirmDialog(
+          "Are you sure you want to factory reset tQMe? You will need your username and product key to re-activate tQMe if you proceed", 
+          "Confirm Factory Reset", 
+          new Runnable() {
+          public void run() {
+            reset(true);
+          }
+        }
+        , 
+          new Runnable() {
+          public void run() {
+          }
+        }
+        );
       }
     } else if (screenNumber == 3) {
       if (key == 't' || key == 'T') {
         try {
-          text = booster.showColorPickerAndGetRGB("Choose the color for TMQM's Text", "Text Color picking");
+          Theme = "Custom";
+          customTheme = true;
+          text = booster.showColorPickerAndGetRGB("Choose the color for tQMe's Text", "Text Color picking");
           newText[0] = (round(red(text)));
           newText [1] = (round(green(text)));
           newText [2] = (round(blue(text)));
@@ -91,6 +121,8 @@ void keyPressed() { //<>// //<>// //<>// //<>//
           booster.showWarningDialog("Invalid Entry", "Warning");
         }
       } else if (key == CODED) {
+        Theme = "Custom";
+        customTheme = true;
         if (keyCode == UP) {
           newPicCol = 255;
         } else if (keyCode == DOWN) {
@@ -102,20 +134,25 @@ void keyPressed() { //<>// //<>// //<>// //<>//
   } else if (startupState == 2) {
     if (key=='r' || key == 'R') {
       reset(true);
-      setup();
     }
   } else if (startupState == 3) {
     if (key == ENTER) {
       state++;
+    } else if (key == '`') {
+      file = booster.showFileSelection();
+      String[] temp = loadStrings(file.toString());
+      uName = temp[2];
+      pKey = temp[4];
+      state = 2;
     }
     if (state == 0) {
-      if (key != ENTER && key != CODED && key != BACKSPACE) {
+      if (key != ENTER && key != CODED && key != BACKSPACE && key != 22 && keyCode!=86) {
         uName+=key;
       } else if (key == BACKSPACE) {
         uName = uName.substring(0, max(0, uName.length() - 1));
       }
     } else if (state == 1) {
-      if (key != ENTER && key != CODED && key != BACKSPACE) {
+      if (key != ENTER && key != CODED && key != BACKSPACE && key != 22 && keyCode!=86) {
         pKey+=key;
       } else if (key == BACKSPACE) {
         pKey = pKey.substring(0, max(0, pKey.length() - 1));

@@ -9,8 +9,8 @@ boolean easterEggStat = false, fadeOut = false, isSetup, activated = false;
 boolean active = false, active2 = false, legacyStat = false, customTheme = false, needReboot, licenceDisabled = false;
 PImage[] loadingAnimation = new PImage[192];
 int textState = 0, numDrives = 0;
-int minDelta = 5000, currentDelta = 0, adminDelta, maxAdminDelta = 250;
-boolean addToDelta = false, tooFast = false, niceTry = false;
+int minDelta = 5000, currentDelta = 0, adminDelta, maxAdminDelta = 250, tSyncDelta;
+boolean addToDelta = false, tooFast = false, niceTry = false, adminError = false, tSyncError;
 PImage logo;
 PImage homep, settingsp, editor;
 
@@ -20,10 +20,10 @@ int lang = 0;
 
 float transSpeed = 2.5;
 
-String[] topTextHome = {"TMQM Home", "الشاشة الرئيسية"};
-String[] topTextSettings = {"TMQM Settings", "إعدادات تمكم"};
-String[] topTextTheme = {"TMQM Theme Editor", "محرر ألوان تمكم"};
-String[] settingBottomText = {"Settings in this color can only be changed in Preferences.tmqm, and some settings can only be found in Preferences.tmqm \n Press R to reload TMQM for settings in this color to take effect \n Press F to perform a Factory Reset", "لا يمكن تغيير الإعدادات بهذا اللون إلا في Preferences.tmqm ، ويمكن العثور على بعض الإعدادات فقط في Preferences.tmqm \n اضغط على R لإعادة تحميل تمكم للإعدادات بهذا اللون لتصبح سارية المفعول \n اضغط F لإجراء إعادة تعيين"};
+String[] topTextHome = {"tQMe Home", "الشاشة الرئيسية"};
+String[] topTextSettings = {"tQMe Settings", "إعدادات تمكم"};
+String[] topTextTheme = {"tQMe Theme Editor", "محرر ألوان تمكم"};
+String[] settingBottomText = {"Settings in this color can only be changed in Preferences.tQMe\nPress R to reload tQMe for settings in this color to take effect. Press F to perform a Factory Reset", "لا يمكن تغيير الإعدادات بهذا اللون إلا في Preferences.tQMe ، ويمكن العثور على بعض الإعدادات فقط في Preferences.tQMe \n اضغط على R لإعادة تحميل تمكم للإعدادات بهذا اللون لتصبح سارية المفعول \n اضغط F لإجراء إعادة تعيين"};
 
 PrintWriter Licence, Pref, cTheme;
 
@@ -79,11 +79,32 @@ void reset(boolean resetLicence) {
   udp.close();
   queue.names.clear();
   if (resetLicence) {
+    Theme = "Dark";
+    cScheme = "Blue";
+    UDPIP = "224.0.1.1";
+    UDPPort = 6000;
+    TMSyncc = "On";
+    updateFile();
     isSetup = false;
     activated = false;
     active = false; 
     active2 = false; 
-    Licence = createWriter("data/ActivationInfo.tmqm");
+    Licence = createWriter("data/ActivationInfo.tQMe");
   }
+  adminError = false;
   setup();
+}
+
+
+String getUserName() {
+  String fullName;
+  try {
+    fullName = Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameDisplay);
+  }
+
+  catch (Exception e) {
+    fullName = System.getProperty("user.name");
+  }
+
+  return(fullName);
 }

@@ -36,9 +36,15 @@ void receive( byte[] data ) {
       adminAdvanced(recName);
     } else if (splitRec[0].equals("ServerDisconnect")) {
       sDisconnectProtocol();
+    } else if (splitRec[0].equals("failedToAuthenticate")) {
+      tSyncError = true;
+      tSyncDelta = 0;
     } else if (!splitRec[0].equals("syncWillBeTurnedOff") && !splitRec[0].equals("isType") && !splitRec[0].equals("numType") &&!splitRec[0].equals("checkType") && !splitRec[0].equals("Version") && !recName.equals("devRec") && !splitRec[0].equals("Size") && !splitRec[0]  .equals("Sync") && !splitRec[0].equals("Starting") && !splitRec[0].equals("waiting4Sync")) {
       queue.names.append(recName); 
       if (adminCommands && !jf.isFocused()) {
+        booster.createNotification(
+          recName + " needs some help!", 
+          "New Queue Member!");
         jf.requestFocus();
       }
       queue.size++;
